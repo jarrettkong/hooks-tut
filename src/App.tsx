@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { Component } from 'react';
 import styled from 'styled-components';
 
 /**
@@ -11,58 +11,34 @@ import styled from 'styled-components';
  *
  */
 
-const useFetchData = () => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [data, setData] = useState(null);
+class App extends Component {
+  state = {
+    count: 0,
+  };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const res = await fetch('https://jsonplaceholder.typicode.com/posts');
-      const data = await res.json();
-      setData(data);
-    };
+  componentDidUpdate() {
+    window.document.title = `The current count is: ${this.state.count}.`;
+  }
 
-    setLoading(true);
-
-    setTimeout(() => {
-      try {
-        fetchData();
-      } catch (err) {
-        setError(err);
-      }
-
-      setLoading(false);
-    }, 5000);
-  }, []);
-
-  return { data, loading, error };
-};
-
-const App = () => {
-  const [count, setCount] = useState(0);
-
-  const { data, loading, error } = useFetchData();
-
-  useEffect(() => {
-    window.document.title = `The current count is: ${count}`;
-  }, [count]);
-
-  if (loading) return <>loading</>;
-  if (error) return <>error</>;
-
-  return (
-    <Overlay column justify="center" align="center">
-      <Wrapper column justify="space-between" align="center">
-        <Header>Count: {count}</Header>
-        <ButtonWrapper>
-          <Button onClick={() => setCount(count - 1)}>Decrement</Button>
-          <Button onClick={() => setCount(count + 1)}>Increment</Button>
-        </ButtonWrapper>
-      </Wrapper>
-    </Overlay>
-  );
-};
+  render() {
+    const { count } = this.state;
+    return (
+      <Overlay column justify="center" align="center">
+        <Wrapper column justify="space-between" align="center">
+          <Header>Count: {count}</Header>
+          <ButtonWrapper>
+            <Button onClick={() => this.setState({ count: count - 1 })}>
+              Decrement
+            </Button>
+            <Button onClick={() => this.setState({ count: count + 1 })}>
+              Increment
+            </Button>
+          </ButtonWrapper>
+        </Wrapper>
+      </Overlay>
+    );
+  }
+}
 
 // styled-components, ignore this
 
